@@ -266,3 +266,26 @@ follow the calc project on his web site
 http://www.isthe.com/chongo/tech/comp/calc/index.html
 and on sourceforge
 https://sourceforge.net/p/calc
+
+# Who wrote calc?
+
+The majority of calc was written by David I. Bell.
+
+The calc source code, calc GitHub repo, calc source code mirrors, and calc releases are maintained by Landon Curt Noll.
+
+Thanks for suggestions and encouragement from Peter Miller, Neil Justusson, and Landon Noll.
+
+Thanks to Stephen Rothwell for writing the original version of hist.c which is used to do the command line editing.
+
+Thanks to Ernest W. Bowen for supplying many improvements in accuracy and generality for some numeric functions. Much of this was in terms of actual code which I gratefully accepted. Ernest also supplied the original text for many of the help files.
+
+Portions of this program are derived from an earlier set of public domain arbitrarily precision routines which was posted to the net around 1984. By now, there is almost no recognizable code left from that original source.
+
+Most of this source and binary has one of the following copyrights:
+
+    Copyright © 19xx David I. Bell
+    Copyright © 19xx David I. Bell and Landon Curt Noll
+    Copyright © 19xx Landon Curt Noll
+    Copyright © 19xx Ernest Bowen and Landon Curt Noll 
+
+The source freely available under a GNU LGPL. See the COPYING-LGPL file for additional details. 
