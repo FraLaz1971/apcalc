@@ -1,0 +1,442 @@
+
+IMPORTANT: Please see the section at the bottom of this file for
+	   some important information on Makefiles used in calc.
+
+Installing calc from the bzip2-ed tarball in 4 easy steps:
+
+    (0)  If your platform supports i686 RPMs, you may want to go to:
+
+	    http://www.isthe.com/chongo/src/calc/
+
+	and use these RPMs:
+
+	    * calc*.i686.rpm
+		- all that is needed if you just want to use calc
+
+	    * calc-devel-*.i686.rpm
+	        - calc *.h header and *.a lib files for use in other programs
+
+	    * calc.*.src.rpm
+	        - calc source in RPM package form
+
+	The following 4 steps apply to calc source tree that comes from either:
+
+		bunzip2 -c calc-*.tar.bz2 | tar -xvf -
+
+	or from:
+
+		rpm -ivh calc-*.src.rpm
+		cd /var/tmp
+		bunzip2 -c /usr/src/redhat/SOURCES/calc-*.tar.bz2 | tar -xvf -
+
+    (1)	Look at the makefile, and adjust it to suit your needs.
+
+	The top level Makefile and the custom/Makefile require a modern
+	Make (such as gmake) or an equivalently advanced make.	On many
+	targets, the default make is sufficient.  On FreeBSD for example,
+	probably want to use gmake instead of make.
+
+	Some report that under macOS, one has to declare the target
+	to be Darwin.  So for macOS, one might have to do:
+
+	    # for macOS users only, force the target to be Darwin
+	    #
+	    make target=Darwin clobber
+	    make target=Darwin all
+	    make target=Darwin chk
+	    make target=Darwin install
+
+	If your target system does not have a moderm Makefile (such as gmake),
+	then you should try using the Makefile.simple and custom/Makefile.simple
+	files:
+
+	    mv Makefile Makefile.gmake
+	    cp Makefile.simple Makefile
+	    mv custom/Makefile custom/Makefile.gmake
+	    cp custom/Makefile.simple custom/Makefile
+
+	The Makefile, as shipped, is suitable for installation under
+	Linux and Un*x-like environments.  For the most part, the default
+	values should work.  If in doubt, follow the 'When in doubt'
+	suggestion.
+
+	If you are using a modern make (such as gmake), you may override
+	any values set in the Mkefile by adding them to Makefile.local
+	using the := directive.  For example:
+
+	    HAVE_STRING_H:= YES
+	    HAVE_TIMES_H:= YES
+	    SED:= /usr/local/bin/nsed
+
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	! If you are building under Windoz or a Windoz-like environment !
+	! (such as Cygwin or DJGPP), read the README.WINDOWS file.      !
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+	You should determine if these Makefile variables are reasonable:
+
+	    INCDIR		Where the system include (.h) files are kept.
+	    BINDIR		Where to install calc binary files.
+	    LIBDIR		Where to install calc link library (*.a) files.
+	    CALC_SHAREDIR	Where to install calc help, .cal, startup, and
+	    			config files.
+
+	You may want to change the default installation locations for
+	these values, which are based on the 4 values listed above:
+
+	    HELPDIR            where the help directory is installed
+	    CALC_INCDIR        where the calc include files are installed
+	    CUSTOMCALDIR       where custom *.cal files are installed
+	    CUSTOMHELPDIR      where custom help files are installed
+	    CUSTOMINCDIR       where custom .h files are installed
+	    SCRIPTDIR          where calc shell scripts are installed
+
+	If you want to install calc files under a top level directory,
+	then set the T value:
+
+	    The calc install is performed under ${T}, the calc build is
+	    performed under /.	The purpose for ${T} is to allow someone
+	    to install calc somewhere other than into the system area.
+
+	    For example, if:
+
+	    	BINDIR= /usr/bin
+		LIBDIR= /usr/lib
+		CALC_SHAREDIR= /usr/share/calc
+
+	    and if:
+
+	    	T= /var/tmp/testing
+
+	    Then the installation locations will be:
+
+		calc binary files:	/var/tmp/testing/usr/bin
+		calc link library:	/var/tmp/testing/usr/lib
+		calc help, .cal ...:	/var/tmp/testing/usr/share/calc
+		... etc ...		/var/tmp/testing/...
+
+	    If ${T} is empty, calc is installed under /, which is the same
+	    top of tree for which it was built.  If ${T} is non-empty, then
+	    calc is installed under ${T}, as if one had to chroot under
+	    ${T} for calc to operate.
+
+	Look for the section that starts:
+
+	    ################
+	    # compiler set #
+	    ################
+
+	    Select a compiler set by commenting in the appropriate set
+	    of cc options.  As shipped the Makefile assumes a gcc-like
+	    environment such as Linux.  If a more appropriate cc set if
+	    found below, comment out the Linux set and comment in that
+	    set or edit the gcc set or the common cc set as needed.
+
+	You may want to change these Makefile variables from their defaults:
+
+	    RANLIB
+
+		You may or may not need RANLIB when building libraries.
+		As shipped the Makefile assumes RANLIB is needed.
+		Comment the in/out the RANLIB value if ranlib does
+		not work or does not exist.
+
+	    CALCPAGER
+
+		You may want to change the default pager used by calc.
+		As shipped the Makefile assumes 'more'.  On your system
+		you may find 'less' to be a better pager.
+
+	    DEBUG
+
+	       Some compilers (to put it mildly) have bugs.  Sometimes the
+	       DEBUG Makefile variable causes the compiler / optimizer to
+	       produce bad code.  Other compilers do just fine.
+
+	       If possible try to use DEBUG=-O3 -g3 (maximum optimization
+	       and debug symbols).  If the calc test fails (see step 3),
+	       try lowering either the -O value and/or the -g3.  Also try
+	       using -Osomething without -g.
+
+	   Adjust other Makefile variables as needed.
+
+    (2)	build calc:
+
+	The top level Makefile and the custom/Makefile require a GNU
+	Make (such as gmake) or an equivalently advanced make.	On many
+	targets, the default make is sufficient.  On FreeBSD for example,
+	one must use gmake instead of make.
+
+	If your target system does not have GNU Make (or equivalent), then
+	you should try using the Makefile.simple and custom/Makefile.simple
+	files:
+
+	    mv Makefile Makefile.gmake
+	    cp Makefile.simple Makefile
+	    mv custom/Makefile custom/Makefile.gmake
+	    cp custom/Makefile.simple custom/Makefile
+
+	make all
+
+	==> We are interested in any compiler warnings (and errors) that
+	    you may find.  See the BUGS file if you find any compiler
+	    warning or errors.
+
+	NOTE: You can force calc to build with only static libs:
+
+		make clobber
+		make calc-static-only BLD_TYPE=calc-static-only
+
+	      or force calc to build with only dynamic libs:
+
+		make clobber
+		make calc-dynamic-only BLD_TYPE=calc-dynamic-only
+
+    (3)	test calc:
+
+	make check
+
+	==> If you run into problems, read the BUGS file and follow
+	    the instructions found in there.
+
+	NOTE: For a quiet check which only prints if something goes wrong:
+
+		make chk
+
+    (4)	install calc:
+
+	make install
+
+We suggest that you might want to read the README.FIRST file and look at
+the calc help subsystem.  See also the README.md file.
+
+=-=
+
+On calc Makefiles:
+
+How to tell the origin of of a Makefile:
+
+    The "# SRC: ... - ..." comment line near the top
+    of the file indicates the origin of this file.
+    In each segment below, we indicate what the SRC
+    comment like will read.
+
+SHELL= ...
+
+    On some systems, /bin/sh is a rather reduced shell with
+    deprecated behavior.
+
+    If your system has a up to date, bash shell, then
+    you may wish to edit the Makefile to use:
+
+	    SHELL= /bin/bash
+
+    On some systems such as macOS, the bash shell is very
+    far behind to the point where is cannot be depended on.
+    On such systems, the zsh may be a much better alternative
+    shell for this Makefile to use:
+
+	    SHELL= /bin/zsh
+
+Makefile
+
+    # SRC: Makefile - Our calc build environment
+
+    This is our internal Makefile that drives how we build calc.
+    For critical rules in Makefile.ship, there is a corresponding
+    rule in Makefile that calls ${MAKE} -f Makefile.ship with,
+    additional commands, args and Makefile variables.  The ${XVAR}
+    Makefile variable, for example, is passed on each call to
+    ${MAKE} -f Makefile.ship so that the environment and parameters of
+    Makefile.ship may be managed for our build environment.
+
+    This Makefile is used to make the calc rpm.  In addition to these
+    comments, this Makefile differs from the non-rpm bzip2-ed tarball
+    source Makefile in at least the the following ways:
+
+	CCWERR= -Werror
+	USE_READLINE= -DUSE_READLINE
+	READLINE_LIB= -lreadline -lhistory -lncurses
+
+    If the Makefile is not suitable for you, then
+    you may wish to replace it with Makefile.ship:
+
+	mv -f -v Makefile.ship Makefile
+
+    This Makefile assumes you have a modern make command such as
+    the GNU make.  See Makefile.simple comment below if you do not
+    have such a modern make command.
+
+    In packages such as RPMs, and the tar.bz2 source tarball,
+    Makefile contains the contents of Makefile.ship.  If Makefile.ship
+    is missing it has likely moved to replace Makefile.
+
+    In the calc GitHub repo, Makefile is the calc build environment
+    and Makefile.ship is the top level Makefile:
+
+	https://github.com/lcn2/calc
+
+Makefile.ship
+
+    # SRC: Makefile.ship - top level Makefile
+
+    This is the main top level Makefile.
+
+    In calc packages such as RPMs, and the tar.bz2 source tarball,
+    Makefile.ship has been moved into Makefile.
+
+    In the calc GitHub repo, Makefile is the calc build environment
+    and Makefile.ship is the top level Makefile:
+
+	https://github.com/lcn2/calc
+
+    The Makefile.simple rule of Makefile.ship, when forming the
+    Makefile.simple file, removes lines from Makefile.ship between
+    pairs of '#if 0' AND '#endif':
+
+	#if 0
+	lines removed when forming Makefile.simple
+	...
+	lines removed when forming Makefile.simple
+	#endif
+
+    The '#if 0' AND '#endif' MUST be at the start of the line.
+    Any text after the '#if 0' OR '#endif' is ignored.
+
+    While they may look like a CPP directives, they are not.  The
+    inline awk script of the Makefile.simple rule does NOT allow
+    them to nest:
+
+	#if 0 /* DO NOT DO THIS */
+	lines removed when forming Makefile.simple
+	...
+	#if 0 /* DO NOT DO THIS */
+	...
+	#endif /* DO NOT DO THIS */
+	...
+	#endif /* DO NOT DO THIS */
+
+    The custom/Makefile rule of Makefile.ship is used to form
+    the custom/Makefile.  In particular the Makefile.ship lines:
+
+	# start of host target cut
+	... these go in between custom/Makefile.head and custom/Makefile.tail
+	# end of host target cut
+
+Makefile.simple
+
+    # SRC: non-GNU Makefile via make -f Makefile.ship Makefile.simple
+
+    This is a non-GNU or simple Makefile designed for environments
+    that do not have a modern make command.
+
+    If you have a Makefile.simple file, use these commands to
+    form a Makefile:
+
+	if [ -f Makefile ]; then mv -f Makefile Makefile.orig; fi
+	cp Makefile.simple Makefile
+
+    The Makefile.simple rule from Makefile.ship is used to construct
+    this file from the contents of Makefile.ship.
+
+    In calc packages such as RPMs, and the tar.bz2 source the
+    Makefile.simple exists.  In the calc GitHub repo:
+
+	https://github.com/lcn2/calc
+
+    this file does NOT exist and must be made via the Makefile.simple
+    make rule.  Therefore, non-GNU and simple make commands are NOT
+    supported by the calc GitHub repo master branch.  Instead, you
+    need to extract Makefile.simple from one of the calc tar.bz2
+    source tarball source from a calc source mirror:
+
+	http://www.isthe.com/chongo/tech/comp/calc/calc-mirror.html
+
+custom/Makefile.head
+
+    # SRC: custom/Makefile.head
+
+    This file forms the top part of the custom/Makefile.
+
+custom/Makefile.tail
+
+    # SRC: custom/Makefile.tail
+
+    This file forms the bottom part of the custom/Makefile.
+
+custom/Makefile
+
+    # SRC: Makefile via make -f Makefile custom/Makefile
+
+    This is the custom directory Makefile.
+
+    The custom/Makefile rule of Makefile.ship is used to form
+    the custom/Makefile.  In particular the Makefile.ship lines:
+
+	# start of host target cut
+	... these go in between custom/Makefile.head and custom/Makefile.tail
+	# end of host target cut
+
+    NOTE: The clobber rule does not remove this file. - XXX
+
+custom/Makefile.simple
+
+    # SRC: non-GNU Makefile via make -f Makefile custom/Makefile.simple
+
+    This is a non-GNU or simple Makefile for the custom directory
+    that is designed for environments that do not have a modern make
+    command.
+
+    In calc packages such as RPMs, and the tar.bz2 source the
+    Makefile.simple exists.  In the calc GitHub repo:
+
+	https://github.com/lcn2/calc
+
+    this file does NOT exist and must be made via the
+    custom/Makefile.simple make rule.  Therefore, non-GNU and simple
+    make commands are NOT supported by the calc GitHub repo master
+    branch.  Instead, you need to extract custom/Makefile.simple
+    from one of the calc tar.bz2 source tarball source from a calc
+    source mirror:
+
+	http://www.isthe.com/chongo/tech/comp/calc/calc-mirror.html
+
+cal/Makefile
+
+    # SRC: cal/Makefile
+
+    The Makefile for the cal sub-directory.
+
+cscript/Makefile
+
+    # SRC: cscript/Makefile
+
+    The Makefile for the cscript sub-directory.
+
+help/Makefile
+
+    # SRC: help/Makefile
+
+    The Makefile for the help sub-directory.
+
+## Copyright (C) 1999-2007,2021  Landon Curt Noll
+##
+## Calc is open software; you can redistribute it and/or modify it under
+## the terms of the version 2.1 of the GNU Lesser General Public License
+## as published by the Free Software Foundation.
+##
+## Calc is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+## or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU Lesser General
+## Public License for more details.
+##
+## A copy of version 2.1 of the GNU Lesser General Public License is
+## distributed with calc under the filename COPYING-LGPL.  You should have
+## received a copy with calc; if not, write to Free Software Foundation, Inc.
+## 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+##
+## Under source code control:	1999/09/27 20:48:44
+## File existed as early as:	1999
+##
+## chongo <was here> /\oo/\	http://www.isthe.com/chongo/
+## Share and enjoy!  :-)	http://www.isthe.com/chongo/tech/comp/calc/
