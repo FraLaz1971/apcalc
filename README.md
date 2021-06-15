@@ -262,3 +262,5 @@ help unexpected
 It contains information about differences between C and calc
 that may surprise C programmers.
 # apcalc
+follow the calc project on his web site
+http://www.isthe.com/chongo/tech/comp/calc/index.html
