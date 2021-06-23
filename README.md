@@ -1,8 +1,10 @@
 # Calc: an arbitray precision calculator
+### original pages and repositories
 http://www.isthe.com/chongo/tech/comp/calc/index.html
 #
 https://github.com/lcn2/calc/releases
-### this source package has been tested to compile on MS win
+### the source package from this github repository
+### has been tested to compile on MS win
 ### and correctly run on MS Win 10 (June 2021)
 
 ## What is calc?
