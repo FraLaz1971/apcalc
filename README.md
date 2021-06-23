@@ -1,4 +1,10 @@
-# What is calc?
+# Calc: an arbitray precision calculator
+http://www.isthe.com/chongo/tech/comp/calc/index.html
+https://github.com/lcn2/calc/releases
+### this source package has been tested to compile on MS win
+### and correctly run on MS Win 10 (June 2021)
+
+## What is calc?
 
 Calc is an interactive calculator which provides for easy large
 numeric calculations, but which also can be easily programmed
